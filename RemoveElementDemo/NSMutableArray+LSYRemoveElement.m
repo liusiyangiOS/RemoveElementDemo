@@ -13,37 +13,16 @@
     if (![self isKindOfClass:NSMutableArray.class] || !self.count){
         return;
     }
-    int retain = 0;
+    //记录需要移除的元素
     int remove = 0;
-    while (retain < self.count) {
-        while (remove < self.count) {
-            if (judgmentBlock(self[remove])){
-                //找到了不符合的元素
-                break;
-            }
+    for (int i = 0; i < self.count; i++) {
+        if (!judgmentBlock(self[i])){
+            [self exchangeObjectAtIndex:remove withObjectAtIndex:i];
             remove++;
         }
-        if (retain == 0) {
-            retain = remove + 1;
-        }else{
-            retain ++;
-        }
-        while (retain < self.count) {
-            if (!judgmentBlock(self[retain])){
-                //找到了符合的元素
-                [self exchangeObjectAtIndex:remove withObjectAtIndex:retain];
-                remove++;
-                break;
-            }
-            retain++;
-        }
-    };
-    if (remove < self.count){
-        //移除不符合的元素并结束
-        for (int i = self.count - 1; i >= remove; i--) {
-            [self removeLastObject];
-        }
     }
+    //移除不符合的元素并结束
+    [self removeObjectsInRange:NSMakeRange(remove, self.count - 1 - remove)];
 }
 
 - (void)lsy_fastRemoveInconformityElementWithJudgmentBlock:(BOOL (^)(id obj))judgmentBlock{
@@ -75,12 +54,7 @@
             right--;
         }
     } while (left < right);
-    if (left < self.count){
-        //移除不符合的元素并结束
-        for (int i = self.count - 1; i >= left; i--) {
-            [self removeLastObject];
-        }
-    }
+    [self removeObjectsInRange:NSMakeRange(left, self.count - 1 - left)];
 }
 
 @end
