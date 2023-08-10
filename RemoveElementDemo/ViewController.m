@@ -29,7 +29,12 @@
     NSMutableArray *persons = [NSMutableArray arrayWithCapacity:count];
     for (int i = 0; i < count; i ++) {
         Person *person = [Person new];
-        person.age = arc4random() % 41;
+        if (i % 2) {
+            person.age = 17;
+        } else {
+            person.age = 19;
+        }
+//        person.age = arc4random() % 41;
         [persons addObject:person];
     }
     NSLog(@"已生成%d个Person实例，容器占用空间%zdKB",count,count * sizeof(Person *) / 1024);
@@ -40,9 +45,7 @@
     [self moveElementToNewArray:[persons mutableCopy] judgmentBlock:^BOOL(id obj) {
         return ((Person *)obj).age < 18;
     }];
-    
     [self fastRemoveElement:[persons mutableCopy]];
-    
     [self stabilizeRemoveElement:[persons mutableCopy]];
 }
 
@@ -69,7 +72,7 @@
         }
     }
     NSDate *end = [NSDate date];
-    NSLog(@"空间换O(n)算法结束,用时%lf秒\n",[end timeIntervalSinceDate:start]);
+    NSLog(@"空间换O(n)算法结束,用时%lf秒",[end timeIntervalSinceDate:start]);
 }
 
 - (void)fastRemoveElement:(NSMutableArray *)element{
